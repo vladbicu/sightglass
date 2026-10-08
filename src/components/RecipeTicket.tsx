@@ -1,3 +1,5 @@
+import { BRAND_NAME } from '../brand'
+import { t } from '../i18n'
 import { fermentationLabel, readings, subtitle } from '../lib/recipeSummary'
 import { srmToRgb } from '../lib/srm'
 import type { Recipe } from '../lib/types'
@@ -5,6 +7,7 @@ import type { Theme } from '../lib/useTheme'
 import type { ViewMode } from '../lib/useViewMode'
 import { FermentablesSection } from './FermentablesSection'
 import { HopsSection } from './HopsSection'
+import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { MashSection } from './MashSection'
 import { MiscSection } from './MiscSection'
@@ -35,6 +38,7 @@ export function RecipeTicket({
   const stats = readings(recipe)
   const fermentation = fermentationLabel(recipe)
   const beerColor = srmToRgb(recipe.color)
+  const m = t()
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8 sm:py-12">
@@ -46,20 +50,20 @@ export function RecipeTicket({
           <span className="h-9 w-9">
             <Mark ink="var(--cream)" fill="var(--copper)" />
           </span>
-          <span className="wordmark text-[1.05rem]">Cazan</span>
+          <span className="wordmark text-[1.05rem]">{BRAND_NAME}</span>
         </div>
         <div className="flex items-center gap-3">
           {position && (
             <>
               <span className="num text-cream-faint text-[0.95rem]">
-                Rețeta {position.index + 1} / {position.total}
+                {m.recipeOf(position.index + 1, position.total)}
               </span>
               <button
                 type="button"
                 onClick={position.onNext}
                 className="border-line-strong text-cream cursor-pointer rounded border px-4 py-2 text-[0.95rem] font-medium"
               >
-                Următoarea →
+                {m.next}
               </button>
             </>
           )}
@@ -68,9 +72,10 @@ export function RecipeTicket({
             onClick={onReset}
             className="border-line-strong text-cream-dim cursor-pointer rounded border px-4 py-2 text-[0.95rem] font-medium"
           >
-            Încarcă altă rețetă
+            {m.loadAnother}
           </button>
           <ViewToggle view={view} onToggle={onToggleView} />
+          <LanguageSelect />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
       </div>
@@ -119,8 +124,8 @@ export function RecipeTicket({
 
           {(recipe.ibuMethod || fermentation) && (
             <div className="border-line text-cream-faint flex flex-wrap gap-x-8 gap-y-2 border-t px-7 py-5 text-[1rem] sm:px-10">
-              {recipe.ibuMethod && <span>IBU după {recipe.ibuMethod}</span>}
-              {fermentation && <span>Fermentare: {fermentation}</span>}
+              {recipe.ibuMethod && <span>{m.ibuBy(recipe.ibuMethod)}</span>}
+              {fermentation && <span>{m.fermentationLine(fermentation)}</span>}
             </div>
           )}
 
@@ -132,7 +137,7 @@ export function RecipeTicket({
 
           {recipe.notes && (
             <section className="border-line border-t px-7 py-9 sm:px-10">
-              <h2 className="section-title mb-4">Note</h2>
+              <h2 className="section-title mb-4">{m.notes}</h2>
               <p className="text-cream-dim max-w-[70ch] text-[1.1rem] whitespace-pre-wrap">
                 {recipe.notes}
               </p>

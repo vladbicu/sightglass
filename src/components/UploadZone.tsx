@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
+import { t } from '../i18n'
 import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
 import type { Theme } from '../lib/useTheme'
+import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -14,6 +16,7 @@ interface UploadZoneProps {
 export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
+  const m = t()
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault()
@@ -26,7 +29,8 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
     <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
       {/* Out of the flow, so the kettle centres on the true viewport centre
           rather than being pushed down by a header row. */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex gap-3">
+        <LanguageSelect />
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
@@ -51,9 +55,9 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
 
         <span className="flex flex-col items-center gap-3">
           <span className="display-title text-[clamp(1.5rem,4vh,2.75rem)] leading-tight">
-            Cazanul e gol
+            {m.emptyKettle}
           </span>
-          <span className="text-cream-dim text-[1.15rem]">Trage un fișier de rețetă aici</span>
+          <span className="text-cream-dim text-[1.15rem]">{m.dropRecipe}</span>
         </span>
 
         <span className="bg-line-strong h-px w-[180px]" />
@@ -77,9 +81,9 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
       />
 
       <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
-        Totul rămâne în browser — nimic nu se trimite nicăieri.{' '}
+        {m.privacy}{' '}
         <a href="/robinete.html" className="text-copper-bright underline-offset-2 hover:underline">
-          Vezi robinetele →
+          {m.seeTaps}
         </a>
       </p>
 
@@ -89,7 +93,7 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
           className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
           <p className="text-danger mb-2 text-[1.05rem] font-semibold">
-            Fișierul nu a putut fi încărcat
+            {m.uploadFailed}
           </p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">
             {errors.map((error) => (

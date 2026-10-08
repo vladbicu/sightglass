@@ -1,4 +1,5 @@
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
+import { t } from '../i18n'
 import { formatMass } from './format'
 import { ebcToSrm } from './srm'
 import type {
@@ -196,7 +197,7 @@ function parseFermentation(node: XmlNode): Fermentation | null {
 
 function parseRecipe(node: XmlNode): Recipe {
   const name = str(node, 'NAME', 'n')
-  if (!name) throw new Error('rețeta nu are nume')
+  if (!name) throw new Error(t().errNoName)
 
   const og = measureNum(node, 'OG', 'EST_OG')
   const fg = measureNum(node, 'FG', 'EST_FG')
@@ -253,24 +254,24 @@ export function parseBeerXML(text: string): ParseResult {
   const errors: string[] = []
 
   if (text.trim() === '') {
-    return { recipes: [], errors: ['Fișierul este gol.'] }
+    return { recipes: [], errors: [t().errFileEmpty] }
   }
 
   const validation = XMLValidator.validate(text)
   if (validation !== true) {
-    return { recipes: [], errors: [`Fișierul nu este XML valid: ${validation.err.msg}`] }
+    return { recipes: [], errors: [t().errInvalidXml(validation.err.msg)] }
   }
 
   let doc: unknown
   try {
     doc = xmlParser.parse(text)
   } catch (err) {
-    return { recipes: [], errors: [`Fișierul nu a putut fi citit: ${message(err)}`] }
+    return { recipes: [], errors: [t().errUnreadable(message(err))] }
   }
 
   const nodes = findRecipeNodes(doc)
   if (nodes.length === 0) {
-    return { recipes: [], errors: ['Fișierul nu conține nicio rețetă BeerXML (<RECIPE>).'] }
+    return { recipes: [], errors: [t().errNoBeerXml] }
   }
 
   const recipes: Recipe[] = []
@@ -278,7 +279,7 @@ export function parseBeerXML(text: string): ParseResult {
     try {
       recipes.push(parseRecipe(node))
     } catch (err) {
-      errors.push(`Rețeta #${i + 1} nu a putut fi citită: ${message(err)}`)
+      errors.push(t().errRecipeFailed(i + 1, message(err)))
     }
   })
 

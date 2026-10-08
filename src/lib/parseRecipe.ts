@@ -1,3 +1,4 @@
+import { t } from '../i18n'
 import { isObject, message } from './json'
 import { parseBeerJSON } from './parseBeerJSON'
 import { parseBeerXML } from './parseBeerXML'
@@ -20,7 +21,7 @@ export function parseRecipeFile(text: string): ParseResult {
   try {
     doc = JSON.parse(text)
   } catch (err) {
-    return { recipes: [], errors: [`Fișierul nu este JSON valid: ${message(err)}`] }
+    return { recipes: [], errors: [t().errInvalidJson(message(err))] }
   }
 
   if (isObject(doc) && 'beerjson' in doc) return parseBeerJSON(doc)
@@ -28,6 +29,6 @@ export function parseRecipeFile(text: string): ParseResult {
 
   return {
     recipes: [],
-    errors: ['Fișierul JSON nu e o rețetă BeerJSON sau Brewfather.'],
+    errors: [t().errUnknownJson],
   }
 }

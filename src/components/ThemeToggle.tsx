@@ -1,3 +1,4 @@
+import { t } from '../i18n'
 import type { Theme } from '../lib/useTheme'
 
 interface ThemeToggleProps {
@@ -18,7 +19,7 @@ export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
     <button
       type="button"
       onClick={onToggle}
-      aria-label={goingLight ? 'Comută pe tema deschisă' : 'Comută pe tema închisă'}
+      aria-label={goingLight ? t().themeToLight : t().themeToDark}
       className="border-line-strong text-cream-dim flex h-11 w-11 cursor-pointer items-center justify-center rounded border"
     >
       <svg

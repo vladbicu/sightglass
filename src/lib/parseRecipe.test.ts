@@ -164,7 +164,7 @@ describe('detectare și erori', () => {
   it('respinge JSON invalid', () => {
     const { recipes, errors } = parseRecipeFile('{ nu e json')
     expect(recipes).toEqual([])
-    expect(errors[0]).toMatch(/JSON valid/)
+    expect(errors).toHaveLength(1)
   })
 
   it('respinge JSON care nu e rețetă', () => {

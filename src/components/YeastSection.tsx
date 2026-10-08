@@ -1,3 +1,4 @@
+import { t, term } from '../i18n'
 import { formatMass, formatNumber } from '../lib/format'
 import type { Yeast } from '../lib/types'
 import { Section } from './Section'
@@ -10,17 +11,21 @@ import { Section } from './Section'
 function amountLabel(yeast: Yeast): string {
   if (yeast.amount === null) return ''
   if (yeast.amountIsWeight) return formatMass(yeast.amount)
-  return yeast.form ? `${formatNumber(yeast.amount, 0)} × ${yeast.form}` : formatNumber(yeast.amount, 0)
+  return yeast.form
+    ? `${formatNumber(yeast.amount, 0)} × ${term(yeast.form)}`
+    : formatNumber(yeast.amount, 0)
 }
 
 export function YeastSection({ yeasts }: { yeasts: Yeast[] }) {
   if (yeasts.length === 0) return null
 
   return (
-    <Section title={yeasts.length > 1 ? 'Drojdii' : 'Drojdie'}>
+    <Section title={t().yeast(yeasts.length)}>
       <div className="grid gap-4 lg:grid-cols-2">
         {yeasts.map((yeast, i) => {
-          const meta = [yeast.laboratory, yeast.productId, yeast.type].filter(Boolean).join(' · ')
+          const meta = [yeast.laboratory, yeast.productId, term(yeast.type)]
+            .filter(Boolean)
+            .join(' · ')
           return (
             <div key={`${yeast.name}-${i}`} className="panel px-6 py-5">
               <p className="text-[1.25rem] leading-tight font-semibold">{yeast.name}</p>
@@ -30,7 +35,7 @@ export function YeastSection({ yeasts }: { yeasts: Yeast[] }) {
                 {amountLabel(yeast) && (
                   <div>
                     <p className="num text-[1.6rem] leading-none">{amountLabel(yeast)}</p>
-                    <p className="stat-label mt-2">Cantitate</p>
+                    <p className="stat-label mt-2">{t().amount}</p>
                   </div>
                 )}
                 {yeast.attenuation !== null && (
@@ -38,7 +43,7 @@ export function YeastSection({ yeasts }: { yeasts: Yeast[] }) {
                     <p className="num text-copper-bright text-[1.6rem] leading-none">
                       {formatNumber(yeast.attenuation)}%
                     </p>
-                    <p className="stat-label mt-2">Atenuare</p>
+                    <p className="stat-label mt-2">{t().attenuation}</p>
                   </div>
                 )}
               </div>

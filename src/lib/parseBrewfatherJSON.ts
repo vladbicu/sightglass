@@ -1,3 +1,4 @@
+import { t } from '../i18n'
 import { formatMass } from './format'
 import { list, message, number, obj, text, type JsonObject } from './json'
 import type {
@@ -119,7 +120,7 @@ function parseFermentation(node: unknown): Fermentation | null {
 
 function parseRecipe(node: JsonObject): Recipe {
   const name = text(node.name)
-  if (!name) throw new Error('rețeta nu are nume')
+  if (!name) throw new Error(t().errNoName)
 
   const og = number(node.og)
   const fg = number(node.fg)
@@ -177,7 +178,7 @@ export function isBrewfatherRecipe(v: unknown): boolean {
 export function parseBrewfatherJSON(doc: unknown): ParseResult {
   const nodes = (Array.isArray(doc) ? list(doc) : list([doc])).filter(isBrewfatherRecipe)
   if (nodes.length === 0) {
-    return { recipes: [], errors: ['Fișierul nu conține nicio rețetă Brewfather.'] }
+    return { recipes: [], errors: [t().errNoBrewfather] }
   }
 
   const recipes: Recipe[] = []
@@ -186,7 +187,7 @@ export function parseBrewfatherJSON(doc: unknown): ParseResult {
     try {
       recipes.push(parseRecipe(unwrap(node)))
     } catch (err) {
-      errors.push(`Rețeta #${i + 1} nu a putut fi citită: ${message(err)}`)
+      errors.push(t().errRecipeFailed(i + 1, message(err)))
     }
   })
   return { recipes, errors }

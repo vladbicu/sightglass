@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { getLocale, t, term } from '../i18n'
 import { formatDuration, formatMass, formatNumber } from '../lib/format'
 import { groupInOrder } from '../lib/group'
 import { hopSchedule, totalHopMass } from '../lib/hopSchedule'
@@ -7,6 +9,7 @@ import type { Recipe } from '../lib/types'
 import { useFitToScreen } from '../lib/useFitToScreen'
 import type { Theme } from '../lib/useTheme'
 import type { ViewMode } from '../lib/useViewMode'
+import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 import { ViewToggle } from './ViewToggle'
@@ -65,13 +68,17 @@ export function CondensedTicket({
   view,
   onToggleView,
 }: CondensedTicketProps) {
-  const { containerRef, contentRef, scale } = useFitToScreen(recipe)
+  const m = t()
+  // The locale is part of the key: a language switch changes every label's width.
+  const locale = getLocale()
+  const fitKey = useMemo(() => ({ recipe, locale }), [recipe, locale])
+  const { containerRef, contentRef, scale } = useFitToScreen(fitKey)
 
   const stats = readings(recipe)
   const fermentation = fermentationLabel(recipe)
   const { boil, rest } = hopSchedule(recipe.hops)
   const grainTotal = recipe.fermentables.reduce((sum, f) => sum + f.amount, 0)
-  const miscGroups = groupInOrder(recipe.miscs, (m) => m.use || 'Alte adaosuri')
+  const miscGroups = groupInOrder(recipe.miscs, (misc) => misc.use)
 
   return (
     // No page scroll is possible here: the viewport is the frame.
@@ -80,14 +87,14 @@ export function CondensedTicket({
         {position && (
           <>
             <span className="num text-cream-faint text-[0.9rem]">
-              Rețeta {position.index + 1} / {position.total}
+              {m.recipeOf(position.index + 1, position.total)}
             </span>
             <button
               type="button"
               onClick={position.onNext}
               className="border-line-strong text-cream cursor-pointer rounded border px-4 py-2 text-[0.9rem] font-medium"
             >
-              Următoarea →
+              {m.next}
             </button>
           </>
         )}
@@ -96,9 +103,10 @@ export function CondensedTicket({
           onClick={onReset}
           className="border-line-strong text-cream-dim cursor-pointer rounded border px-4 py-2 text-[0.9rem] font-medium"
         >
-          Încarcă altă rețetă
+          {m.loadAnother}
         </button>
         <ViewToggle view={view} onToggle={onToggleView} />
+        <LanguageSelect />
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
@@ -143,7 +151,7 @@ export function CondensedTicket({
           </div>
 
           <div className="columns-3 gap-9">
-            <Block title="Cereale" aside={formatMass(grainTotal)}>
+            <Block title={m.fermentables} aside={formatMass(grainTotal)}>
               {grainTotal > 0 && (
                 <div className="mb-3 flex h-3 w-full overflow-hidden rounded-sm">
                   {recipe.fermentables.map((f, i) => (
@@ -171,7 +179,7 @@ export function CondensedTicket({
             </Block>
 
             {(boil.length > 0 || rest.length > 0) && (
-              <Block title="Hamei" aside={formatMass(totalHopMass(recipe.hops))}>
+              <Block title={m.hops} aside={formatMass(totalHopMass(recipe.hops))}>
                 {[...boil, ...rest].map((group) => (
                   <div key={group.key} className="mb-2.5 break-inside-avoid last:mb-0">
                     <div className="flex items-baseline gap-2.5">
@@ -200,14 +208,14 @@ export function CondensedTicket({
 
             {recipe.mashSteps.length > 0 && (
               <Block
-                title="Plămădire"
+                title={m.mash}
                 aside={formatDuration(recipe.mashSteps.reduce((s, m) => s + (m.stepTime ?? 0), 0))}
               >
                 <ul>
                   {recipe.mashSteps.map((step, i) => (
                     <Row
                       key={`${step.name}-${i}`}
-                      name={step.name && step.name !== step.type ? step.name : step.type}
+                      name={step.name && step.name !== step.type ? step.name : term(step.type)}
                       value={`${
                         step.stepTemp !== null ? `${formatNumber(step.stepTemp)} °C` : '—'
                       }  ·  ${formatDuration(step.stepTime)}`}
@@ -218,14 +226,14 @@ export function CondensedTicket({
             )}
 
             {recipe.yeasts.length > 0 && (
-              <Block title={recipe.yeasts.length > 1 ? 'Drojdii' : 'Drojdie'}>
+              <Block title={m.yeast(recipe.yeasts.length)}>
                 <ul>
                   {recipe.yeasts.map((yeast, i) => (
                     <Row
                       key={`${yeast.name}-${i}`}
                       name={yeast.name}
                       value={
-                        yeast.attenuation !== null ? `${formatNumber(yeast.attenuation)}% aten.` : ''
+                        yeast.attenuation !== null ? m.attenuationShort(formatNumber(yeast.attenuation)) : ''
                       }
                     />
                   ))}
@@ -234,10 +242,12 @@ export function CondensedTicket({
             )}
 
             {miscGroups.length > 0 && (
-              <Block title="Adaosuri">
+              <Block title={m.additions}>
                 {miscGroups.map(([use, groupMiscs]) => (
                   <div key={use} className="mb-2 break-inside-avoid last:mb-0">
-                    <span className="text-copper-bright text-[1rem] font-semibold">{use}</span>
+                    <span className="text-copper-bright text-[1rem] font-semibold">
+                      {use ? term(use) : m.otherAdditions}
+                    </span>
                     <ul className="mt-0.5 pl-3">
                       {groupMiscs.map((misc, i) => (
                         <Row
@@ -254,12 +264,12 @@ export function CondensedTicket({
             )}
 
             {(recipe.ibuMethod || fermentation || recipe.brewer) && (
-              <Block title="Detalii">
+              <Block title={m.details}>
                 <ul className="text-cream-dim text-[0.95rem]">
                   {recipe.brewer && <li className="py-[3px]">{recipe.brewer}</li>}
                   {recipe.date && <li className="num py-[3px]">{recipe.date}</li>}
-                  {recipe.ibuMethod && <li className="py-[3px]">IBU după {recipe.ibuMethod}</li>}
-                  {fermentation && <li className="py-[3px]">Fermentare: {fermentation}</li>}
+                  {recipe.ibuMethod && <li className="py-[3px]">{m.ibuBy(recipe.ibuMethod)}</li>}
+                  {fermentation && <li className="py-[3px]">{m.fermentationLine(fermentation)}</li>}
                 </ul>
               </Block>
             )}

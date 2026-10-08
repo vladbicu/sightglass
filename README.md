@@ -32,6 +32,22 @@ Unlike the viewer, the tap list **persists** — in `localStorage` under
 still only the browser's own storage; nothing leaves the machine. The theme
 choice is shared with the viewer.
 
+## Languages
+
+English, German, French and Romanian, without an i18n library: each language is
+one file in `src/i18n/messages/`, typed against `en.ts`, so a missing or extra
+key fails `npm run typecheck`. Counted phrases are functions, so each language
+owns its plural rules (Romanian's "20 de zile").
+
+The language comes from `?lang=de` in the URL (handy for links posted in a
+group), then the stored choice (`cazan-lang`), then the browser, then English.
+Values written by the exporting app — `Dry Hop`, `Pellet`, `Grain` — are
+translated through each language's `terms` map; anything unknown shows as
+written. Gravities keep the decimal point in every language.
+
+The product name lives in `src/brand.ts` alone, pending a new international
+name.
+
 ## Commands
 
 ```bash

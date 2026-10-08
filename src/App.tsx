@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
 import { UploadZone } from './components/UploadZone'
+import { type Messages, t, useLocale } from './i18n'
 import { readRecipeFile } from './lib/parseBeerXML'
 import { parseRecipeFile } from './lib/parseRecipe'
 import type { Recipe } from './lib/types'
 import { useTheme } from './lib/useTheme'
 import { useViewMode } from './lib/useViewMode'
 import { useWakeLock } from './lib/useWakeLock'
+
+const recipeTitle = (m: Messages) => m.titleRecipe
 
 export default function App() {
   // One file at a time — no library, no tabs, nothing persisted across reloads.
@@ -16,6 +19,7 @@ export default function App() {
   const [index, setIndex] = useState(0)
   const { theme, toggleTheme } = useTheme()
   const { view, toggleView } = useViewMode()
+  useLocale(recipeTitle)
 
   useWakeLock(recipes !== null)
 
@@ -25,7 +29,7 @@ export default function App() {
 
       if (parsed.length === 0) {
         setRecipes(null)
-        setErrors(parseErrors.length > 0 ? parseErrors : ['Fișierul nu conține nicio rețetă.'])
+        setErrors(parseErrors.length > 0 ? parseErrors : [t().errNoRecipe])
         return
       }
 
@@ -35,7 +39,7 @@ export default function App() {
       setIndex(0)
     } catch (err) {
       setRecipes(null)
-      setErrors([`Fișierul nu a putut fi citit: ${err instanceof Error ? err.message : err}`])
+      setErrors([t().errUnreadable(err instanceof Error ? err.message : String(err))])
     }
   }
 

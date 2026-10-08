@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { TapBoard } from './components/TapBoard'
 import { TapUpload } from './components/TapUpload'
+import { type Messages, useLocale } from './i18n'
 import { consumeSharedFiles } from './lib/shareTarget'
 import { useTapList } from './lib/useTapList'
 import { useTheme } from './lib/useTheme'
@@ -11,8 +12,11 @@ import { useWakeLock } from './lib/useWakeLock'
  * show each beer with only the facts a taproom board carries. A separate HTML
  * entry (`robinete.html`) — there is no router.
  */
+const tapsTitle = (m: Messages) => m.titleTaps
+
 export function TapList() {
   const { theme, toggleTheme } = useTheme()
+  useLocale(tapsTitle)
   const { taps, tapCount, setTapCount, errors, addFiles, remove, move, clear } = useTapList()
 
   // A TV behind the bar shouldn't dim mid-service.

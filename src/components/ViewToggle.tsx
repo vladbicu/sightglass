@@ -1,3 +1,4 @@
+import { t } from '../i18n'
 import type { ViewMode } from '../lib/useViewMode'
 
 interface ViewToggleProps {
@@ -16,7 +17,7 @@ export function ViewToggle({ view, onToggle }: ViewToggleProps) {
     <button
       type="button"
       onClick={onToggle}
-      aria-label={goingCondensed ? 'Comută pe vederea condensată' : 'Comută pe vederea detaliată'}
+      aria-label={goingCondensed ? t().viewToCondensed : t().viewToFull}
       className="border-line-strong text-cream-dim flex h-11 w-11 cursor-pointer items-center justify-center rounded border"
     >
       <svg

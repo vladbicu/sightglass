@@ -1,3 +1,4 @@
+import { t, term } from '../i18n'
 import { formatDuration, formatGravity, formatNumber } from './format'
 import type { Recipe } from './types'
 
@@ -21,16 +22,17 @@ export function readings(recipe: Recipe): Reading[] {
     if (value !== '') list.push({ label, value, unit, accent })
   }
 
+  const m = t()
   push('OG', formatGravity(recipe.og))
   push('FG', formatGravity(recipe.fg))
   push('ABV', formatNumber(recipe.abv), '%', true)
   push('IBU', formatNumber(recipe.ibu, 0), undefined, true)
   push('SRM', formatNumber(recipe.color))
-  push('Volum', formatNumber(recipe.batchSize), 'L')
-  push('Fierbere', formatNumber(recipe.boilSize), 'L')
-  push('Timp fierbere', formatDuration(recipe.boilTime))
-  push('Eficiență', formatNumber(recipe.efficiency, 0), '%')
-  push('Calorii', formatNumber(recipe.calories, 0), 'kcal')
+  push(m.statVolume, formatNumber(recipe.batchSize), 'L')
+  push(m.statBoilSize, formatNumber(recipe.boilSize), 'L')
+  push(m.statBoilTime, formatDuration(recipe.boilTime))
+  push(m.statEfficiency, formatNumber(recipe.efficiency, 0), '%')
+  push(m.statCalories, formatNumber(recipe.calories, 0), 'kcal')
 
   return list
 }
@@ -39,7 +41,7 @@ export function subtitle(recipe: Recipe): string {
   const styleParts = recipe.style
     ? [recipe.style.name, recipe.style.category, recipe.style.guide].filter(Boolean)
     : []
-  return [...styleParts, recipe.type].filter(Boolean).join(' · ')
+  return [...styleParts, term(recipe.type)].filter(Boolean).join(' · ')
 }
 
 /** Unique hop varieties in first-seen order — the "what will I taste" line. */
@@ -72,6 +74,6 @@ export function fermentationLabel(recipe: Recipe): string {
   const parts: string[] = []
   if (f.primaryAge !== null) parts.push(formatDuration(f.primaryAge * 1440))
   if (f.primaryTemp !== null) parts.push(`${formatNumber(f.primaryTemp)} °C`)
-  if (f.stages !== null) parts.push(f.stages === 1 ? '1 etapă' : `${f.stages} etape`)
+  if (f.stages !== null) parts.push(t().stages(f.stages))
   return parts.join(' · ')
 }

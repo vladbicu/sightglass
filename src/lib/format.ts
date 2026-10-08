@@ -1,3 +1,5 @@
+import { t } from '../i18n'
+
 /** Drops trailing zeros so 2.50 reads "2.5" but 4.06 stays "4.06". */
 function trimZeros(s: string): string {
   return s.includes('.') ? s.replace(/\.?0+$/, '') : s
@@ -15,23 +17,12 @@ export function formatMass(kg: number | null): string {
 }
 
 /**
- * Romanian needs "de" before the plural for numbers whose last two digits are
- * 0 or 20-99: 3 zile, but 20 de zile.
- */
-function days(n: number): string {
-  const label = trimZeros(n.toFixed(1))
-  if (n === 1) return '1 zi'
-  const rem = Math.floor(n) % 100
-  return rem === 0 || rem >= 20 ? `${label} de zile` : `${label} zile`
-}
-
-/**
  * Dry hops and secondary additions carry TIME in minutes (4320 = 3 days), which
  * is unreadable at a distance. Anything a day or longer is shown in days.
  */
 export function formatDuration(minutes: number | null): string {
   if (minutes === null || !Number.isFinite(minutes)) return ''
-  if (minutes >= 1440) return days(minutes / 1440)
+  if (minutes >= 1440) return t().days(minutes / 1440)
   return `${trimZeros(minutes.toFixed(0))} min`
 }
 

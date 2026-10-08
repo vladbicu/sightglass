@@ -1,10 +1,12 @@
 import { Fragment, useMemo, useState } from 'react'
+import { getLocale, t } from '../i18n'
 import { formatGravity, formatNumber } from '../lib/format'
 import { hopNames, subtitle, yeastNames } from '../lib/recipeSummary'
 import { srmToEbc, srmToRgb } from '../lib/srm'
 import { MAX_TAP_COUNT, type Tap } from '../lib/tapList'
 import { useFitToScreen } from '../lib/useFitToScreen'
 import type { Theme } from '../lib/useTheme'
+import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { TapUpload } from './TapUpload'
 import { ThemeToggle } from './ThemeToggle'
@@ -114,6 +116,7 @@ function TapRow({
       : formatGravity(recipe.og) || formatGravity(recipe.fg)
   const hops = hopNames(recipe)
   const yeasts = yeastNames(recipe)
+  const m = t()
 
   return (
     <li
@@ -144,13 +147,15 @@ function TapRow({
           <dl className="mt-2 space-y-0.5 text-[0.95rem] leading-tight">
             {hops.length > 0 && (
               <div className="flex gap-2.5">
-                <dt className="eyebrow shrink-0 pt-[0.15rem] text-[0.65rem]">Hamei</dt>
+                <dt className="eyebrow shrink-0 pt-[0.15rem] text-[0.65rem]">{m.hops}</dt>
                 <dd className="text-cream-dim min-w-0 truncate">{hops.join(' · ')}</dd>
               </div>
             )}
             {yeasts.length > 0 && (
               <div className="flex gap-2.5">
-                <dt className="eyebrow shrink-0 pt-[0.15rem] text-[0.65rem]">Drojdie</dt>
+                <dt className="eyebrow shrink-0 pt-[0.15rem] text-[0.65rem]">
+                  {m.yeast(yeasts.length)}
+                </dt>
                 <dd className="text-cream-dim min-w-0 truncate">{yeasts.join(' · ')}</dd>
               </div>
             )}
@@ -167,7 +172,7 @@ function TapRow({
       <button
         type="button"
         onClick={onRemove}
-        aria-label={`Scoate ${recipe.name} din listă`}
+        aria-label={m.removeBeer(recipe.name)}
         className="text-cream-faint hover:text-danger shrink-0 cursor-pointer px-2 text-[1.5rem] leading-none"
       >
         ×
@@ -206,7 +211,10 @@ export function TapBoard({
   theme,
   onToggleTheme,
 }: TapBoardProps) {
-  const fitKey = useMemo(() => ({ taps, tapCount }), [taps, tapCount])
+  const m = t()
+  // The locale is part of the key: a language switch changes every label's width.
+  const locale = getLocale()
+  const fitKey = useMemo(() => ({ taps, tapCount, locale }), [taps, tapCount, locale])
   const { containerRef, contentRef, scale } = useFitToScreen(fitKey)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
@@ -222,7 +230,7 @@ export function TapBoard({
   }
 
   const clear = () => {
-    if (window.confirm('Golești toată lista?')) onClear()
+    if (window.confirm(m.clearConfirm)) onClear()
   }
 
   const live = Math.min(tapCount, taps.length)
@@ -236,20 +244,20 @@ export function TapBoard({
           <span className="h-8 w-8">
             <Mark ink="var(--cream)" fill="var(--copper)" />
           </span>
-          <span className="wordmark text-[1.05rem]">Robinete</span>
+          <span className="wordmark text-[1.05rem]">{m.appTaps}</span>
           <span className="num text-cream-faint text-[0.9rem]">
-            {taps.length === 1 ? '1 bere' : `${taps.length} beri`}
+            {m.beers(taps.length)}
           </span>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="border-line-strong flex items-center gap-2 rounded border px-2.5 py-1">
-            <span className="stat-label text-[0.6rem]">Robinete</span>
+            <span className="stat-label text-[0.6rem]">{m.tapCount}</span>
             <button
               type="button"
               onClick={() => onTapCountChange(tapCount - 1)}
               disabled={tapCount <= 1}
-              aria-label="Un robinet mai puțin"
+              aria-label={m.oneTapLess}
               className="text-cream-dim cursor-pointer px-1 text-[1.2rem] leading-none disabled:opacity-30"
             >
               −
@@ -259,7 +267,7 @@ export function TapBoard({
               type="button"
               onClick={() => onTapCountChange(tapCount + 1)}
               disabled={tapCount >= MAX_TAP_COUNT}
-              aria-label="Încă un robinet"
+              aria-label={m.oneTapMore}
               className="text-cream-dim cursor-pointer px-1 text-[1.2rem] leading-none disabled:opacity-30"
             >
               +
@@ -271,14 +279,15 @@ export function TapBoard({
             onClick={clear}
             className="border-line-strong text-cream-dim cursor-pointer rounded border px-4 py-2 text-[0.9rem] font-medium"
           >
-            Golește
+            {m.clear}
           </button>
           <a
             href="/index.html"
             className="border-line-strong text-cream-dim rounded border px-4 py-2 text-[0.9rem] font-medium no-underline"
           >
-            ← Încarcă o rețetă
+            {m.loadRecipe}
           </a>
+          <LanguageSelect />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
       </div>
@@ -298,12 +307,12 @@ export function TapBoard({
           className="mx-auto w-full max-w-[1400px]"
         >
           <ul className="divide-line divide-y">
-            {taps.length > 0 && <SectionLabel>La robinet</SectionLabel>}
+            {taps.length > 0 && <SectionLabel>{m.onTap}</SectionLabel>}
 
             {taps.map((tap, i) => (
               <Fragment key={tap.id}>
                 {i === live && queuedCount > 0 && (
-                  <SectionLabel>Gata de pus la robinet</SectionLabel>
+                  <SectionLabel>{m.upNext}</SectionLabel>
                 )}
                 <TapRow
                   tap={tap}
@@ -325,7 +334,7 @@ export function TapBoard({
                 <TapNumber n={taps.length + k + 1} free />
                 <span className="border-line-strong h-20 w-20 shrink-0 rounded border border-dashed" />
                 <p className="display-title text-cream-faint flex-1 text-[1.9rem] leading-tight">
-                  Liber
+                  {m.freeTap}
                 </p>
               </li>
             ))}

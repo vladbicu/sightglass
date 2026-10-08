@@ -2,13 +2,18 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
 import { TapBoard } from './components/TapBoard'
+import { setLocale } from './i18n'
 import { parseBeerXML } from './lib/parseBeerXML'
 import type { Tap } from './lib/tapList'
 import type { Hop, Recipe } from './lib/types'
+
+// These assertions were written against the Romanian UI; other languages are
+// covered at the end of the file.
+setLocale('ro')
 
 const fixture = parseBeerXML(
   readFileSync(
@@ -153,4 +158,31 @@ it('two dry hop charges stay separate blocks in both views', () => {
     expect(text).toContain('7 zile')
     expect(text).toContain('85 °C')
   }
+})
+
+describe('other languages', () => {
+  afterEach(() => setLocale('ro'))
+
+  it.each([
+    ['en', ['On tap', 'Up next', 'Hops', 'Yeast', '2 beers']],
+    ['de', ['Am Hahn', 'Als Nächstes', 'Hopfen', 'Hefe', '2 Biere']],
+    ['fr', ['À la pression', 'Prochainement', 'Houblons', 'Levure', '2 bières']],
+  ] as const)('the tap board speaks %s', (locale, phrases) => {
+    setLocale(locale)
+    const text = strip(renderBoard(1))
+    for (const phrase of phrases) expect(text).toContain(phrase)
+    expect(text).not.toContain('La robinet')
+  })
+
+  it.each([
+    ['en', ['3 days', '7 days', 'Dry Hop', 'Fermentables']],
+    ['de', ['3 Tage', '7 Tage', 'Hopfenstopfen', 'Schüttung']],
+    ['fr', ['3 jours', '7 jours', 'Houblonnage à cru', 'Fermentescibles']],
+  ] as const)('the recipe ticket speaks %s, file values included', (locale, phrases) => {
+    setLocale(locale)
+    for (const condensed of [true, false]) {
+      const text = strip(render(hopHeavy, condensed))
+      for (const phrase of phrases) expect(text).toContain(phrase)
+    }
+  })
 })

@@ -1,3 +1,4 @@
+import { t, term } from '../i18n'
 import { formatDuration, formatNumber } from '../lib/format'
 import type { MashStep } from '../lib/types'
 import { Section } from './Section'
@@ -9,7 +10,7 @@ export function MashSection({ steps, mashName }: { steps: MashStep[]; mashName: 
 
   return (
     <Section
-      title="Plămădire"
+      title={t().mash}
       // mashName is empty in Grainfather exports, so the total carries the header.
       aside={[mashName, formatDuration(totalTime)].filter(Boolean).join(' · ')}
     >
@@ -18,7 +19,7 @@ export function MashSection({ steps, mashName }: { steps: MashStep[]; mashName: 
           const last = i === steps.length - 1
           // Many exporters set NAME to the same word as TYPE ("Temperature");
           // showing it twice would just be noise.
-          const label = step.name && step.name !== step.type ? step.name : step.type
+          const label = step.name && step.name !== step.type ? step.name : term(step.type)
 
           return (
             <li key={`${step.name}-${i}`} className="relative flex gap-6 pb-8 last:pb-0">

@@ -1,3 +1,4 @@
+import { t, term } from '../i18n'
 import { formatDuration, formatNumber } from './format'
 import { groupInOrder } from './group'
 import type { Hop } from './types'
@@ -40,14 +41,14 @@ export function hopSchedule(hops: Hop[]): { boil: HopGroupData[]; rest: HopGroup
       hops: groupHops,
     }))
 
-  const restGroups = groupInOrder(rest, (h) => `${h.use || 'Alte adaosuri'}|${h.time ?? ''}`).map(
+  const restGroups = groupInOrder(rest, (h) => `${h.use}|${h.time ?? ''}`).map(
     ([key, groupHops]) => {
       const first = groupHops[0]!
       // A hop stand shares one temperature across the group.
       const temp = groupHops.find((h) => h.temperature !== null)?.temperature ?? null
       return {
         key: `rest-${key}`,
-        title: first.use || 'Alte adaosuri',
+        title: first.use ? term(first.use) : t().otherAdditions,
         detail: [temp !== null ? `${formatNumber(temp)} °C` : '', formatDuration(first.time)]
           .filter(Boolean)
           .join(' · '),

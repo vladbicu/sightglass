@@ -1,3 +1,4 @@
+import { t, term } from '../i18n'
 import { formatDuration, formatMass, formatNumber } from '../lib/format'
 import { hopSchedule, totalHopMass } from '../lib/hopSchedule'
 import type { Hop } from '../lib/types'
@@ -5,10 +6,10 @@ import { Section } from './Section'
 
 function hopMeta(hop: Hop): string {
   return [
-    hop.form,
+    term(hop.form),
     hop.alpha !== null ? `${formatNumber(hop.alpha)}% AA` : '',
     // Only worth naming when it differs from the group it sits in.
-    hop.use.toLowerCase() === 'first wort' ? hop.use : '',
+    hop.use.toLowerCase() === 'first wort' ? term(hop.use) : '',
   ]
     .filter(Boolean)
     .join(' · ')
@@ -66,16 +67,17 @@ export function HopsSection({ hops, boilTime }: { hops: Hop[]; boilTime: number 
   if (hops.length === 0) return null
 
   const { boil: boilGroups, rest: restGroups } = hopSchedule(hops)
+  const m = t()
 
   return (
-    <Section title="Hamei" aside={`${formatMass(totalHopMass(hops))} total`}>
+    <Section title={m.hops} aside={m.total(formatMass(totalHopMass(hops)))}>
       {boilGroups.length > 0 && (
         <div className="mb-9">
           <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4">
-            <h3 className="eyebrow">Fierbere</h3>
+            <h3 className="eyebrow">{m.boil}</h3>
             {boilTime !== null && boilTime > 0 && (
               <span className="num text-cream-faint text-[0.95rem]">
-                {formatDuration(boilTime)} total
+                {m.total(formatDuration(boilTime))}
               </span>
             )}
           </div>
@@ -89,7 +91,7 @@ export function HopsSection({ hops, boilTime }: { hops: Hop[]; boilTime: number 
 
       {restGroups.length > 0 && (
         <div>
-          <h3 className="eyebrow mb-3">După fierbere</h3>
+          <h3 className="eyebrow mb-3">{m.afterBoil}</h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {restGroups.map((group) => (
               <HopGroup

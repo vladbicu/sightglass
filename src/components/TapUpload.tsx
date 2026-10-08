@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
+import { t } from '../i18n'
 import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
 import type { Theme } from '../lib/useTheme'
+import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -19,6 +21,7 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
   const [dragging, setDragging] = useState(false)
 
   const pick = () => inputRef.current?.click()
+  const m = t()
 
   const input = (
     <input
@@ -44,7 +47,7 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
           onClick={pick}
           className="border-line-strong text-cream-dim cursor-pointer rounded border px-4 py-2 text-[0.9rem] font-medium"
         >
-          + Adaugă
+          {m.add}
         </button>
         {input}
       </>
@@ -61,7 +64,8 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
   return (
     <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
       {theme && onToggleTheme && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex gap-3">
+          <LanguageSelect />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
       )}
@@ -85,11 +89,9 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
 
         <span className="flex flex-col items-center gap-3">
           <span className="display-title text-[clamp(1.5rem,4vh,2.75rem)] leading-tight">
-            Niciun robinet încă
+            {m.tapsEmpty}
           </span>
-          <span className="text-cream-dim text-[1.15rem]">
-            Trage aici fișiere de rețetă — câte vrei
-          </span>
+          <span className="text-cream-dim text-[1.15rem]">{m.dropTaps}</span>
         </span>
 
         <span className="bg-line-strong h-px w-[180px]" />
@@ -102,9 +104,9 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
       {input}
 
       <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
-        Robinetele rămân salvate în acest browser.{' '}
+        {m.tapsSaved}{' '}
         <a href="/index.html" className="text-copper-bright underline-offset-2 hover:underline">
-          Deschide o rețetă →
+          {m.openRecipe}
         </a>
       </p>
 
@@ -114,7 +116,7 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
           className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
           <p className="text-danger mb-2 text-[1.05rem] font-semibold">
-            Unele fișiere nu au putut fi citite
+            {m.someFilesFailed}
           </p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">
             {errors.map((error) => (
