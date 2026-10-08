@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { Hub } from './Hub'
+import App from './App.tsx'
 import { registerServiceWorker } from './lib/registerServiceWorker'
 
 registerServiceWorker()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Hub />
+    <App />
   </StrictMode>,
 )

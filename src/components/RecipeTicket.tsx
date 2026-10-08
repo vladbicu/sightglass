@@ -1,14 +1,13 @@
-import { BRAND_NAME } from '../brand'
 import { t } from '../i18n'
 import { fermentationLabel, readings, subtitle } from '../lib/recipeSummary'
 import { srmToRgb } from '../lib/srm'
 import type { Recipe } from '../lib/types'
 import type { Theme } from '../lib/useTheme'
 import type { ViewMode } from '../lib/useViewMode'
+import { AppSwitcher } from './AppSwitcher'
 import { FermentablesSection } from './FermentablesSection'
 import { HopsSection } from './HopsSection'
 import { LanguageSelect } from './LanguageSelect'
-import { Mark } from './Mark'
 import { MashSection } from './MashSection'
 import { MiscSection } from './MiscSection'
 import { ThemeToggle } from './ThemeToggle'
@@ -43,15 +42,7 @@ export function RecipeTicket({
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8 sm:py-12">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        {/* Horizontal lockup. The wordmark steps down to Public Sans caps
-            because the recipe title below is already a Fraunces title, and
-            never two serif titles in one view. */}
-        <div className="flex items-center gap-3">
-          <span className="h-9 w-9">
-            <Mark ink="var(--cream)" fill="var(--copper)" />
-          </span>
-          <span className="wordmark text-[1.05rem]">{BRAND_NAME}</span>
-        </div>
+        <AppSwitcher current="recipe" />
         <div className="flex items-center gap-3">
           {position && (
             <>

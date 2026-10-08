@@ -141,6 +141,10 @@ describe('exportul real Brewfather', () => {
     expect(recipe.yeasts[0]!.laboratory).toBe('Lallemand (LalBrew)')
   })
 
+  it('ignoră stilul-placeholder "Unknown"', () => {
+    expect(recipe.style).toBeNull()
+  })
+
   it('citește valorile cu unitate lipită ("9.1 SRM", "4.33 %")', () => {
     expect(recipe.color).toBe(9.1)
     expect(recipe.og).toBe(1.045)

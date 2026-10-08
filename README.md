@@ -12,20 +12,32 @@ Everything runs client-side: no backend, no database, no upload. Nothing
 persists across a refresh — deliberately, this is a viewer for brew day, not a
 recipe library.
 
+## Pages
+
+Three Vite entries, no router:
+
+- `index.html` — the hub: both apps side by side as equal cards, each with its
+  own drop zone. A drop hands the files to that app through Cache Storage and
+  `?shared=1`, the same hand-off the Android share target uses.
+- `recipe.html` — the single-recipe viewer.
+- `robinete.html` — the tap list.
+
+Both apps carry the same switcher in their header (`AppSwitcher`): the brand
+goes back to the hub, and a segmented control moves between the two.
+
 ## Tap list
 
-`robinete.html` is a second, separate page (its own Vite entry — there is no
-router). Drop in several BeerXML files and it keeps them as a **tap list**: one
+Drop in several recipe files and it keeps them as a **tap list**: one
 row per beer with a large colour square (exact SRM · EBC printed under it), the
 board figures — ABV, IBU, OG→FG — and, to educate the drinker, the hop varieties
 and yeast strain. The whole board scales to a single screen like the condensed
 recipe view.
 
 The bar has a fixed number of taps (set in the header, default 3). The first N
-beers on the ordered list are **La robinet**, numbered by tap position; the rest
-sit below under **Gata de pus la robinet**; any tap with no beer shows as
-**Liber**. Dragging a beer across the divider is how it goes on or comes off tap.
-A row is removed with its `×`, and "Golește" empties the board.
+beers on the ordered list are **On tap**, numbered by tap position; the rest
+sit below under **Up next**; any tap with no beer shows as **Empty**. Dragging a
+beer across the divider is how it goes on or comes off tap. A row is removed
+with its `×`, and "Clear" empties the board.
 
 Unlike the viewer, the tap list **persists** — in `localStorage` under
 `cazan-taplist` — because a curated board is only useful if it stays put. It is

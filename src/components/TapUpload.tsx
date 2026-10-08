@@ -1,15 +1,14 @@
-import { useRef, useState } from 'react'
 import { t } from '../i18n'
-import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
+import { useFileDrop } from '../lib/useFileDrop'
 import type { Theme } from '../lib/useTheme'
+import { AppSwitcher } from './AppSwitcher'
 import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 
-
 interface TapUploadProps {
   onFiles: (files: File[]) => void
-  /** Full-screen empty state when true; a lone "+ Adaugă" button when false. */
+  /** Full-screen empty state when true; a lone "+ Add" button when false. */
   full?: boolean
   errors?: string[]
   theme?: Theme
@@ -17,27 +16,8 @@ interface TapUploadProps {
 }
 
 export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: TapUploadProps) {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [dragging, setDragging] = useState(false)
-
-  const pick = () => inputRef.current?.click()
+  const { dragging, pick, dropProps, inputProps } = useFileDrop(onFiles, true)
   const m = t()
-
-  const input = (
-    <input
-      ref={inputRef}
-      type="file"
-      multiple
-      accept={RECIPE_FILE_ACCEPT}
-      className="hidden"
-      onChange={(e) => {
-        const files = Array.from(e.target.files ?? [])
-        if (files.length > 0) onFiles(files)
-        // Reset so re-picking the same file still fires onChange.
-        e.target.value = ''
-      }}
-    />
-  )
 
   if (!full) {
     return (
@@ -49,36 +29,27 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
         >
           {m.add}
         </button>
-        {input}
+        <input {...inputProps} />
       </>
     )
   }
 
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault()
-    setDragging(false)
-    const files = Array.from(event.dataTransfer.files)
-    if (files.length > 0) onFiles(files)
-  }
-
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
-      {theme && onToggleTheme && (
-        <div className="absolute top-4 right-4 flex gap-3">
-          <LanguageSelect />
-          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-        </div>
-      )}
+    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(4.5rem,8vh,5rem)]">
+      <div className="absolute top-4 right-4 left-4 flex flex-wrap items-center justify-between gap-3">
+        <AppSwitcher current="taps" />
+        {theme && onToggleTheme && (
+          <div className="flex gap-3">
+            <LanguageSelect />
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+          </div>
+        )}
+      </div>
 
       <button
         type="button"
         onClick={pick}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setDragging(true)
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={handleDrop}
+        {...dropProps}
         className={`bg-oak border-line flex w-full cursor-pointer flex-col items-center gap-[clamp(1rem,3.5vh,2.75rem)] rounded border px-8 py-[clamp(1.75rem,7vh,5rem)] text-center transition-colors ${
           dragging ? 'border-copper-bright bg-oak-raised' : ''
         }`}
@@ -101,13 +72,10 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
         </span>
       </button>
 
-      {input}
+      <input {...inputProps} />
 
       <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
-        {m.tapsSaved}{' '}
-        <a href="/index.html" className="text-copper-bright underline-offset-2 hover:underline">
-          {m.openRecipe}
-        </a>
+        {m.tapsSaved}
       </p>
 
       {errors.length > 0 && (
@@ -115,9 +83,7 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
           role="alert"
           className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
-          <p className="text-danger mb-2 text-[1.05rem] font-semibold">
-            {m.someFilesFailed}
-          </p>
+          <p className="text-danger mb-2 text-[1.05rem] font-semibold">{m.someFilesFailed}</p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">
             {errors.map((error) => (
               <li key={error}>{error}</li>

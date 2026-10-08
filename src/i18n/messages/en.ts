@@ -12,7 +12,8 @@ const n = (v: number) => String(Number(v.toFixed(1)))
 export const en = {
   appRecipe: 'Recipe',
   appTaps: 'Taps',
-  titleRecipe: BRAND_NAME,
+  titleHub: BRAND_NAME,
+  titleRecipe: `${BRAND_NAME} · Recipe`,
   titleTaps: `${BRAND_NAME} · Taps`,
   language: 'Language',
 
@@ -22,11 +23,23 @@ export const en = {
   viewToCondensed: 'Switch to condensed view',
   viewToFull: 'Switch to detailed view',
 
+  // Hub
+  apps: 'Apps',
+  hubTagline: 'Two screens for homebrewers: the recipe on brew day, the tap list at the bar.',
+  recipeBlurb: 'One recipe in big type for brew day, readable from across the brewery.',
+  tapsBlurb:
+    'Your tap list on the bar TV: color, ABV, IBU, hops and yeast for every beer, kept between visits.',
+  dropOrPick: 'Drop a recipe file or click to choose',
+  dropOrPickMany: 'Drop recipe files or click to choose',
+  chooseFile: 'Choose a file',
+  chooseFiles: 'Choose files',
+  openApp: (name: string) => `Open ${name} →`,
+  onBoard: (beers: string) => `${beers} on the board`,
+
   // Recipe viewer
   emptyKettle: 'The kettle is empty',
   dropRecipe: 'Drop a recipe file here',
   privacy: 'Everything stays in your browser — nothing is sent anywhere.',
-  seeTaps: 'See the taps →',
   uploadFailed: 'The file could not be loaded',
   loadAnother: 'Load another recipe',
   recipeOf: (i: number, total: number) => `Recipe ${i} / ${total}`,
@@ -67,12 +80,10 @@ export const en = {
   tapsEmpty: 'Nothing on tap yet',
   dropTaps: 'Drop recipe files here — as many as you like',
   tapsSaved: 'Your tap list stays saved in this browser.',
-  openRecipe: 'Open a recipe →',
   someFilesFailed: 'Some files could not be read',
   add: '+ Add',
   clear: 'Clear',
   clearConfirm: 'Clear the whole list?',
-  loadRecipe: '← Load a recipe',
   beers: (count: number) => (count === 1 ? '1 beer' : `${count} beers`),
   tapCount: 'Taps',
   oneTapLess: 'One tap fewer',

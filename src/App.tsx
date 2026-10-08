@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
 import { UploadZone } from './components/UploadZone'
 import { type Messages, t, useLocale } from './i18n'
 import { readRecipeFile } from './lib/parseBeerXML'
 import { parseRecipeFile } from './lib/parseRecipe'
+import { consumeSharedFiles } from './lib/shareTarget'
 import type { Recipe } from './lib/types'
 import { useTheme } from './lib/useTheme'
 import { useViewMode } from './lib/useViewMode'
@@ -23,7 +24,7 @@ export default function App() {
 
   useWakeLock(recipes !== null)
 
-  const handleFile = async (file: File) => {
+  const handleFile = useCallback(async (file: File) => {
     try {
       const { recipes: parsed, errors: parseErrors } = parseRecipeFile(await readRecipeFile(file))
 
@@ -41,7 +42,17 @@ export default function App() {
       setRecipes(null)
       setErrors([t().errUnreadable(err instanceof Error ? err.message : String(err))])
     }
-  }
+  }, [])
+
+  // A file dropped on the hub's recipe card arrives the way an Android share
+  // does on the tap list: stashed in Cache Storage, flagged with `?shared=1`.
+  useEffect(() => {
+    if (!location.search.includes('shared=1')) return
+    history.replaceState(null, '', '/recipe.html')
+    consumeSharedFiles().then((files) => {
+      if (files[0]) handleFile(files[0])
+    })
+  }, [handleFile])
 
   const reset = () => {
     setRecipes(null)

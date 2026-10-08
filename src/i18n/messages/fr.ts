@@ -9,7 +9,8 @@ const count = (v: number, one: string, many: string) => `${n(v)} ${v < 2 ? one :
 export const fr: Messages = {
   appRecipe: 'Recette',
   appTaps: 'Tireuses',
-  titleRecipe: BRAND_NAME,
+  titleHub: BRAND_NAME,
+  titleRecipe: `${BRAND_NAME} · Recette`,
   titleTaps: `${BRAND_NAME} · Tireuses`,
   language: 'Langue',
 
@@ -18,10 +19,23 @@ export const fr: Messages = {
   viewToCondensed: 'Passer à la vue condensée',
   viewToFull: 'Passer à la vue détaillée',
 
+  apps: 'Applications',
+  hubTagline:
+    'Deux écrans pour les brasseurs amateurs : la recette le jour du brassage, les tireuses au bar.',
+  recipeBlurb:
+    'Une recette en grands caractères pour le jour du brassage, lisible depuis l’autre bout de la brasserie.',
+  tapsBlurb:
+    'Votre liste de bières sur la télé du bar : couleur, ABV, IBU, houblons et levure pour chaque bière, conservée d’une visite à l’autre.',
+  dropOrPick: 'Déposez un fichier de recette ou cliquez pour choisir',
+  dropOrPickMany: 'Déposez des fichiers de recette ou cliquez pour choisir',
+  chooseFile: 'Choisir un fichier',
+  chooseFiles: 'Choisir des fichiers',
+  openApp: (name) => `Ouvrir ${name} →`,
+  onBoard: (beers) => `${beers} sur la liste`,
+
   emptyKettle: 'La cuve est vide',
   dropRecipe: 'Déposez un fichier de recette ici',
   privacy: 'Tout reste dans votre navigateur — rien n’est envoyé nulle part.',
-  seeTaps: 'Voir les tireuses →',
   uploadFailed: 'Le fichier n’a pas pu être chargé',
   loadAnother: 'Charger une autre recette',
   recipeOf: (i, total) => `Recette ${i} / ${total}`,
@@ -59,12 +73,10 @@ export const fr: Messages = {
   tapsEmpty: 'Rien à la pression pour l’instant',
   dropTaps: 'Déposez vos fichiers de recette ici — autant que vous voulez',
   tapsSaved: 'La liste reste enregistrée dans ce navigateur.',
-  openRecipe: 'Ouvrir une recette →',
   someFilesFailed: 'Certains fichiers n’ont pas pu être lus',
   add: '+ Ajouter',
   clear: 'Vider',
   clearConfirm: 'Vider toute la liste ?',
-  loadRecipe: '← Charger une recette',
   beers: (c) => count(c, 'bière', 'bières'),
   tapCount: 'Tireuses',
   oneTapLess: 'Une tireuse de moins',

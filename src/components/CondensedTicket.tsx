@@ -9,6 +9,7 @@ import type { Recipe } from '../lib/types'
 import { useFitToScreen } from '../lib/useFitToScreen'
 import type { Theme } from '../lib/useTheme'
 import type { ViewMode } from '../lib/useViewMode'
+import { AppSwitcher } from './AppSwitcher'
 import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
@@ -83,7 +84,10 @@ export function CondensedTicket({
   return (
     // No page scroll is possible here: the viewport is the frame.
     <div className="flex h-[100dvh] flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center justify-end gap-3 px-6 pt-4 pb-2">
+      <div className="flex shrink-0 items-center gap-3 px-6 pt-4 pb-2">
+        <div className="mr-auto">
+          <AppSwitcher current="recipe" compact />
+        </div>
         {position && (
           <>
             <span className="num text-cream-faint text-[0.9rem]">

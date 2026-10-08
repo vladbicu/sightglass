@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 export type Theme = 'dark' | 'light'
 
-/** Kept in sync with the pre-paint script in index.html. */
+/** Kept in sync with the pre-paint script in every page's HTML. */
 export const THEME_STORAGE_KEY = 'cazan-theme'
 
 export function readStoredTheme(): Theme {

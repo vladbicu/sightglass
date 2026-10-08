@@ -2,7 +2,7 @@
   "name": "Cazan",
   "short_name": "Cazan",
   "description": "BeerXML recipe viewer and tap list board",
-  "start_url": "/robinete.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0d0907",
   "theme_color": "#0d0907",

@@ -183,7 +183,8 @@ function parseStyle(node: unknown): Style | null {
     str(node, 'CATEGORY') || `${str(node, 'CATEGORY_NUMBER')}${str(node, 'STYLE_LETTER')}`
   const guide = str(node, 'STYLE_GUIDE')
 
-  if (!name && !category && !guide) return null
+  // Brewfather writes a placeholder style named "Unknown" when none was chosen.
+  if (!category && !guide && (!name || name.toLowerCase() === 'unknown')) return null
   return { name, category, guide }
 }
 

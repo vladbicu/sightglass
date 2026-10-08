@@ -6,8 +6,8 @@ import { srmToEbc, srmToRgb } from '../lib/srm'
 import { MAX_TAP_COUNT, type Tap } from '../lib/tapList'
 import { useFitToScreen } from '../lib/useFitToScreen'
 import type { Theme } from '../lib/useTheme'
+import { AppSwitcher } from './AppSwitcher'
 import { LanguageSelect } from './LanguageSelect'
-import { Mark } from './Mark'
 import { TapUpload } from './TapUpload'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -240,11 +240,8 @@ export function TapBoard({
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden">
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 px-6 pt-4 pb-2">
-        <div className="flex items-center gap-3">
-          <span className="h-8 w-8">
-            <Mark ink="var(--cream)" fill="var(--copper)" />
-          </span>
-          <span className="wordmark text-[1.05rem]">{m.appTaps}</span>
+        <div className="flex items-center gap-4">
+          <AppSwitcher current="taps" compact />
           <span className="num text-cream-faint text-[0.9rem]">
             {m.beers(taps.length)}
           </span>
@@ -281,12 +278,6 @@ export function TapBoard({
           >
             {m.clear}
           </button>
-          <a
-            href="/index.html"
-            className="border-line-strong text-cream-dim rounded border px-4 py-2 text-[0.9rem] font-medium no-underline"
-          >
-            {m.loadRecipe}
-          </a>
           <LanguageSelect />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>

@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
 import { t } from '../i18n'
-import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
+import { useFileDrop } from '../lib/useFileDrop'
 import type { Theme } from '../lib/useTheme'
+import { AppSwitcher } from './AppSwitcher'
 import { LanguageSelect } from './LanguageSelect'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
@@ -14,37 +14,27 @@ interface UploadZoneProps {
 }
 
 export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneProps) {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [dragging, setDragging] = useState(false)
+  const { dragging, pick, dropProps, inputProps } = useFileDrop((files) => onFile(files[0]!), false)
   const m = t()
 
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault()
-    setDragging(false)
-    const file = event.dataTransfer.files[0]
-    if (file) onFile(file)
-  }
-
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
+    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(4.5rem,8vh,5rem)]">
       {/* Out of the flow, so the kettle centres on the true viewport centre
           rather than being pushed down by a header row. */}
-      <div className="absolute top-4 right-4 flex gap-3">
-        <LanguageSelect />
-        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+      <div className="absolute top-4 right-4 left-4 flex flex-wrap items-center justify-between gap-3">
+        <AppSwitcher current="recipe" />
+        <div className="flex gap-3">
+          <LanguageSelect />
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        </div>
       </div>
 
       {/* The empty kettle: the same mark, unfilled and dimmed to the faint
           tier. No arrow — the level line already points at the horizontal. */}
       <button
         type="button"
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setDragging(true)
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={handleDrop}
+        onClick={pick}
+        {...dropProps}
         className={`bg-oak border-line flex w-full cursor-pointer flex-col items-center gap-[clamp(1rem,3.5vh,2.75rem)] rounded border px-8 py-[clamp(1.75rem,7vh,5rem)] text-center transition-colors ${
           dragging ? 'border-copper-bright bg-oak-raised' : ''
         }`}
@@ -67,24 +57,10 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
         </span>
       </button>
 
-      <input
-        ref={inputRef}
-        type="file"
-        accept={RECIPE_FILE_ACCEPT}
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) onFile(file)
-          // Reset so picking the same file twice in a row still fires onChange.
-          e.target.value = ''
-        }}
-      />
+      <input {...inputProps} />
 
       <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
-        {m.privacy}{' '}
-        <a href="/robinete.html" className="text-copper-bright underline-offset-2 hover:underline">
-          {m.seeTaps}
-        </a>
+        {m.privacy}
       </p>
 
       {errors.length > 0 && (
@@ -92,9 +68,7 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
           role="alert"
           className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
-          <p className="text-danger mb-2 text-[1.05rem] font-semibold">
-            {m.uploadFailed}
-          </p>
+          <p className="text-danger mb-2 text-[1.05rem] font-semibold">{m.uploadFailed}</p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">
             {errors.map((error) => (
               <li key={error}>{error}</li>

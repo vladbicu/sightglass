@@ -8,6 +8,25 @@ interface ShareTargetMeta {
 let sharedFiles: Promise<File[]> | null = null
 
 /**
+ * Hands files to another page: stores them exactly where the service worker
+ * puts a share_target POST, then navigates to `page?shared=1`, so the receiving
+ * page has one way in for both. Used by the hub's drop zones. Without Cache
+ * Storage (an insecure origin) the page still opens, just without the files.
+ */
+export async function openWithFiles(page: string, files: File[]): Promise<void> {
+  if (!('caches' in window)) {
+    location.href = page
+    return
+  }
+
+  const cache = await caches.open(SHARE_CACHE)
+  const meta: ShareTargetMeta = { names: files.map((file) => file.name) }
+  await cache.put('/share-target-meta', new Response(JSON.stringify(meta)))
+  await Promise.all(files.map((file, i) => cache.put(`/share-target-file-${i}`, new Response(file))))
+  location.href = `${page}?shared=1`
+}
+
+/**
  * Picks up file(s) the service worker stashed in Cache Storage after intercepting
  * a share_target POST (see public/sw.js), or `[]` if there's nothing pending.
  *

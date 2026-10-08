@@ -8,11 +8,12 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    // Two independent pages: the single-recipe viewer and the tap list. Each
-    // gets its own HTML entry and bundle — there is no router.
+    // Three independent pages: the hub, the single-recipe viewer and the tap
+    // list. Each gets its own HTML entry and bundle — there is no router.
     rollupOptions: {
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
+        recipe: resolve(import.meta.dirname, 'recipe.html'),
         robinete: resolve(import.meta.dirname, 'robinete.html'),
       },
     },
