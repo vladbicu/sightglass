@@ -5,6 +5,7 @@ import { Mark } from './components/Mark'
 import { ThemeToggle } from './components/ThemeToggle'
 import { type Messages, t, useLocale } from './i18n'
 import { openWithFiles } from './lib/shareTarget'
+import { readRecipeSession } from './lib/recipeSession'
 import { parseStoredTaps, TAPLIST_STORAGE_KEY } from './lib/tapList'
 import { useFileDrop } from './lib/useFileDrop'
 import { useTheme } from './lib/useTheme'
@@ -112,6 +113,8 @@ export function Hub() {
   const { theme, toggleTheme } = useTheme()
   useLocale(hubTitle)
   const [beers] = useState(savedBeerCount)
+  const [session] = useState(readRecipeSession)
+  const openRecipe = session ? (session.recipes[session.index] ?? session.recipes[0])!.name : ''
   const m = t()
 
   return (
@@ -146,6 +149,7 @@ export function Hub() {
             multiple={false}
             dropLabel={m.dropOrPick}
             pickLabel={m.chooseFile}
+            status={openRecipe ? m.recipeOpen(openRecipe) : undefined}
           />
           <AppCard
             name={m.appTaps}

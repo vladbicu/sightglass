@@ -31,6 +31,7 @@ export const fr: Messages = {
   chooseFile: 'Choisir un fichier',
   chooseFiles: 'Choisir des fichiers',
   openApp: (name) => `Ouvrir ${name} →`,
+  recipeOpen: (name) => `Ouverte : ${name}`,
   onBoard: (beers) => `${beers} sur la liste`,
 
   emptyKettle: 'La cuve est vide',

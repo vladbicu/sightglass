@@ -34,6 +34,7 @@ export const en = {
   chooseFile: 'Choose a file',
   chooseFiles: 'Choose files',
   openApp: (name: string) => `Open ${name} →`,
+  recipeOpen: (name: string) => `Open now: ${name}`,
   onBoard: (beers: string) => `${beers} on the board`,
 
   // Recipe viewer

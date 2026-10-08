@@ -8,9 +8,10 @@ brewery, read from 2-3 metres away.
 The name comes from the boil kettle — *cazan* in Romanian, the copper vessel at
 the middle of any brew day, and the source of the interface's accent colour.
 
-Everything runs client-side: no backend, no database, no upload. Nothing
-persists across a refresh — deliberately, this is a viewer for brew day, not a
-recipe library.
+Everything runs client-side: no backend, no database, no upload. The open
+recipe lives in the tab's `sessionStorage`: it survives a reload and a trip to
+the tap list and back, and disappears when the tab is closed — deliberately,
+this is a viewer for brew day, not a recipe library.
 
 ## Pages
 
@@ -127,7 +128,7 @@ assumed rather than seen in a fixture.
 TV watched from across the room, where a screen full of warm white at brew-day
 brightness is a lamp pointed at you. The light theme is an explicit choice, from
 the toggle button, for a second monitor or a sunlit garage — the preference is
-kept in `localStorage` (only that; the recipe still does not persist).
+kept in `localStorage` (the recipe only in `sessionStorage`, for the tab's life).
 
 ## Casting to a TV
 

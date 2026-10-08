@@ -23,8 +23,8 @@ export function readStoredTheme(): Theme {
  * for a second monitor or a sunlit garage, so it only ever comes from this
  * switch.
  *
- * The recipe itself still never persists — this stores a UI preference, not
- * brew data.
+ * This stores a UI preference, not brew data; the open recipe lives only in
+ * the tab's sessionStorage.
  */
 export function useTheme(): { theme: Theme; toggleTheme: () => void } {
   const [theme, setTheme] = useState<Theme>(readStoredTheme)

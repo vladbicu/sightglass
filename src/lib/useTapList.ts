@@ -52,8 +52,8 @@ export interface UseTapList {
 /**
  * The tap list, persisted across reloads under `cazan-taplist`. This is the one
  * place the app keeps brew data between sessions — the single-recipe viewer
- * still deliberately forgets everything on refresh; a curated board only works
- * if it stays put.
+ * keeps its recipe only for the life of the browser tab; a curated board only
+ * works if it stays put.
  */
 export function useTapList(): UseTapList {
   const [taps, setTaps] = useState<Tap[]>(readStored)

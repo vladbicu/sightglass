@@ -36,6 +36,7 @@ export const ro: Messages = {
   chooseFile: 'Alege un fișier',
   chooseFiles: 'Alege fișiere',
   openApp: (name) => `Deschide ${name} →`,
+  recipeOpen: (name) => `Deschisă acum: ${name}`,
   onBoard: (beers) => `${beers} pe listă`,
 
   emptyKettle: 'Cazanul e gol',

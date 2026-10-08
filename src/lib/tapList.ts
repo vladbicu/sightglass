@@ -13,7 +13,7 @@ export interface Tap {
   addedAt: number
 }
 
-/** Shared with the pre-paint-free tap page; unlike the viewer, this one persists. */
+/** Unlike the viewer's recipe, which lasts only as long as the tab, this persists. */
 export const TAPLIST_STORAGE_KEY = 'cazan-taplist'
 
 /** How many physical taps the bar has. The first N beers on the board are live. */

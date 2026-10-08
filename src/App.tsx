@@ -5,6 +5,7 @@ import { UploadZone } from './components/UploadZone'
 import { type Messages, t, useLocale } from './i18n'
 import { readRecipeFile } from './lib/parseBeerXML'
 import { parseRecipeFile } from './lib/parseRecipe'
+import { readRecipeSession, writeRecipeSession } from './lib/recipeSession'
 import { consumeSharedFiles } from './lib/shareTarget'
 import type { Recipe } from './lib/types'
 import { useTheme } from './lib/useTheme'
@@ -14,15 +15,21 @@ import { useWakeLock } from './lib/useWakeLock'
 const recipeTitle = (m: Messages) => m.titleRecipe
 
 export default function App() {
-  // One file at a time — no library, no tabs, nothing persisted across reloads.
-  const [recipes, setRecipes] = useState<Recipe[] | null>(null)
+  // One file at a time, no library. It lasts as long as the browser tab: back
+  // from the tap list or after a reload it is still open, gone once the tab is.
+  const [session] = useState(readRecipeSession)
+  const [recipes, setRecipes] = useState<Recipe[] | null>(session?.recipes ?? null)
   const [errors, setErrors] = useState<string[]>([])
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(session?.index ?? 0)
   const { theme, toggleTheme } = useTheme()
   const { view, toggleView } = useViewMode()
   useLocale(recipeTitle)
 
   useWakeLock(recipes !== null)
+
+  useEffect(() => {
+    writeRecipeSession(recipes ? { recipes, index } : null)
+  }, [recipes, index])
 
   const handleFile = useCallback(async (file: File) => {
     try {
