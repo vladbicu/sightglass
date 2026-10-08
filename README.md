@@ -1,5 +1,7 @@
 # Sightglass
 
+**Live:** <https://sightglass-jix9.onrender.com/>
+
 You load a recipe export — BeerXML (Grainfather, Brewfather, BeerSmith),
 BeerJSON, or Brewfather's own JSON — and see it as a
 recipe ticket set in large type, made for a second monitor or a TV in the
@@ -139,5 +141,7 @@ session is not interrupted when the source laptop would fall asleep. The API
 requires HTTPS or `localhost` and is missing on older Safari — failure is
 silent.
 
-If the TV has its own browser, opening a deployed URL directly on the TV is more
-stable than casting. Deployment is not configured in the repo.
+If the TV has its own browser, opening the live URL
+(<https://sightglass-jix9.onrender.com/>) directly on the TV is more stable than
+casting. It is hosted on Render and deploys on every push to `main`; the
+deployment settings live in Render, not in the repo.
