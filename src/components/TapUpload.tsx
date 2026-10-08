@@ -35,8 +35,8 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
   }
 
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(4.5rem,8vh,5rem)]">
-      <div className="absolute top-4 right-4 left-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col px-6 py-4 sm:justify-center sm:py-[clamp(4.5rem,8vh,5rem)]">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:absolute sm:top-4 sm:right-4 sm:left-4 sm:mb-0">
         <AppSwitcher current="taps" />
         {theme && onToggleTheme && (
           <div className="flex gap-3">

@@ -18,10 +18,11 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
   const m = t()
 
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(4.5rem,8vh,5rem)]">
-      {/* Out of the flow, so the kettle centres on the true viewport centre
-          rather than being pushed down by a header row. */}
-      <div className="absolute top-4 right-4 left-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col px-6 py-4 sm:justify-center sm:py-[clamp(4.5rem,8vh,5rem)]">
+      {/* Out of the flow from sm up, so the kettle centres on the true
+          viewport centre rather than being pushed down by a header row. On a
+          phone there is no room to overlay it, so it sits above the kettle. */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:absolute sm:top-4 sm:right-4 sm:left-4 sm:mb-0">
         <AppSwitcher current="recipe" />
         <div className="flex gap-3">
           <LanguageSelect />

@@ -16,7 +16,7 @@ export const LOCALES: readonly { code: Locale; name: string }[] = [
 
 const MESSAGES: Record<Locale, Messages> = { en, ro, de, fr }
 
-/** Internal key, like the other `cazan-*` ones — kept across the rebrand. */
+/** Internal key; like the other `cazan-*` ones it predates the Sightglass name. */
 export const LOCALE_STORAGE_KEY = 'cazan-lang'
 
 function isLocale(v: unknown): v is Locale {

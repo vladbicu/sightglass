@@ -1,6 +1,6 @@
 {
-  "name": "Cazan",
-  "short_name": "Cazan",
+  "name": "Sightglass",
+  "short_name": "Sightglass",
   "description": "BeerXML recipe viewer and tap list board",
   "start_url": "/",
   "display": "standalone",

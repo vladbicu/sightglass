@@ -26,8 +26,11 @@ export function AppSwitcher({ current, compact }: { current: AppId; compact?: bo
           <Mark ink="var(--cream)" fill="var(--copper)" />
         </span>
         {/* Public Sans caps: the recipe title is already a Fraunces title, and
-            never two serif titles in one view. */}
-        {!compact && <span className="wordmark text-[1.05rem]">{BRAND_NAME}</span>}
+            never two serif titles in one view. It gives way first on a phone,
+            where the switcher and the toggles need the row. */}
+        {!compact && (
+          <span className="wordmark hidden text-[1.05rem] sm:inline">{BRAND_NAME}</span>
+        )}
       </a>
 
       <nav aria-label={m.apps} className="border-line-strong flex rounded border p-1">

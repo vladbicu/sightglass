@@ -1,12 +1,15 @@
-# Cazan
+# Sightglass
 
 You load a recipe export — BeerXML (Grainfather, Brewfather, BeerSmith),
 BeerJSON, or Brewfather's own JSON — and see it as a
 recipe ticket set in large type, made for a second monitor or a TV in the
 brewery, read from 2-3 metres away.
 
-The name comes from the boil kettle — *cazan* in Romanian, the copper vessel at
-the middle of any brew day, and the source of the interface's accent colour.
+The name is the sight glass on a kettle or fermenter — the tube that shows the
+liquid level, which is what the mark draws: a ring with a level line across it.
+The copper accent comes from the kettle itself. The project started as *Cazan*
+(Romanian for the boil kettle); the `cazan-*` storage keys keep that name so
+saved tap lists and preferences survive the rename.
 
 Everything runs client-side: no backend, no database, no upload. The open
 recipe lives in the tab's `sessionStorage`: it survives a reload and a trip to
@@ -58,8 +61,7 @@ Values written by the exporting app — `Dry Hop`, `Pellet`, `Grain` — are
 translated through each language's `terms` map; anything unknown shows as
 written. Gravities keep the decimal point in every language.
 
-The product name lives in `src/brand.ts` alone, pending a new international
-name.
+The product name lives in `src/brand.ts` alone and is not translated.
 
 ## Commands
 

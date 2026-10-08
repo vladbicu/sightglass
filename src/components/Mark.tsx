@@ -11,7 +11,7 @@ interface MarkProps {
 }
 
 /**
- * The Cazan mark: a ring with a level line across it.
+ * The Sightglass mark: a ring with a level line across it.
  *
  * A kettle seen from directly above with the wort level across it — read
  * another way, a dial with its needle at rest, or the meniscus in a hydrometer
