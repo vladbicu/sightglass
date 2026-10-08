@@ -1,5 +1,6 @@
 import { XMLParser, XMLValidator } from 'fast-xml-parser'
 import { formatMass } from './format'
+import { ebcToSrm } from './srm'
 import type {
   Fermentable,
   Fermentation,
@@ -20,6 +21,9 @@ const xmlParser = new XMLParser({
   // tag stays distinguishable from a real 0.
   parseTagValue: false,
   trimValues: true,
+  // Brewfather escapes every space and bracket as a numeric reference
+  // (`Elderflower&#32;Ale`), which is only decoded with htmlEntities on.
+  htmlEntities: true,
 })
 
 function isNode(v: unknown): v is XmlNode {
@@ -71,6 +75,31 @@ function num(node: unknown, ...names: string[]): number | null {
   if (raw === '') return null
   const parsed = Number(raw)
   return Number.isFinite(parsed) ? parsed : null
+}
+
+/** A leading number and the unit glued after it: "9.1 SRM", "1.045 SG", "4.33 %". */
+const MEASURE_RE = /^(-?\d+(?:\.\d+)?|-?\.\d+)\s*([a-z°%]*)$/i
+
+/**
+ * Like `num`, but tolerates the unit Brewfather appends to recipe-level figures
+ * (`<EST_COLOR>9.1 SRM</EST_COLOR>`), which `Number()` would turn into NaN.
+ */
+function measure(node: unknown, ...names: string[]): { value: number; unit: string } | null {
+  const match = MEASURE_RE.exec(str(node, ...names))
+  if (!match) return null
+  const value = Number(match[1])
+  return Number.isFinite(value) ? { value, unit: match[2]!.toLowerCase() } : null
+}
+
+function measureNum(node: unknown, ...names: string[]): number | null {
+  return measure(node, ...names)?.value ?? null
+}
+
+/** Recipe colour in SRM: a bare figure or °L reads as SRM, an explicit EBC is converted. */
+function colorSrm(node: unknown, ...names: string[]): number | null {
+  const m = measure(node, ...names)
+  if (!m) return null
+  return m.unit === 'ebc' ? ebcToSrm(m.value) : m.value
 }
 
 /** fast-xml-parser yields a bare object for a lone child and an array for many. */
@@ -169,10 +198,11 @@ function parseRecipe(node: XmlNode): Recipe {
   const name = str(node, 'NAME', 'n')
   if (!name) throw new Error('rețeta nu are nume')
 
-  const og = num(node, 'OG', 'EST_OG')
-  const fg = num(node, 'FG', 'EST_FG')
+  const og = measureNum(node, 'OG', 'EST_OG')
+  const fg = measureNum(node, 'FG', 'EST_FG')
   // A recipe with no ABV of its own can still be derived from the gravities.
-  const abv = num(node, 'ABV', 'EST_ABV') ?? (og !== null && fg !== null ? (og - fg) * 131.25 : null)
+  const abv =
+    measureNum(node, 'ABV', 'EST_ABV') ?? (og !== null && fg !== null ? (og - fg) * 131.25 : null)
 
   const boilSize = num(node, 'BOIL_SIZE')
   const mash = getTag(node, 'MASH')
@@ -191,9 +221,9 @@ function parseRecipe(node: XmlNode): Recipe {
     og,
     fg,
     abv,
-    ibu: num(node, 'IBU', 'EST_IBU'),
+    ibu: measureNum(node, 'IBU', 'EST_IBU'),
     ibuMethod: str(node, 'IBU_METHOD'),
-    color: num(node, 'COLOR', 'EST_COLOR'),
+    color: colorSrm(node, 'COLOR', 'EST_COLOR'),
     calories: num(node, 'CALORIES', 'EST_CALORIES'),
     notes: str(node, 'NOTES'),
     style: parseStyle(getTag(node, 'STYLE')),

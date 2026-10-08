@@ -117,6 +117,39 @@ describe('exportul real Grainfather', () => {
   })
 })
 
+describe('exportul real Brewfather', () => {
+  const recipe = parseOne(
+    readFileSync(
+      fileURLToPath(
+        new URL('../../fixtures/Brewfather_BeerXML_ElderflowerAle_20261008.xml', import.meta.url),
+      ),
+      'utf8',
+    ),
+  )
+
+  it('decodează referințele numerice (&#32; &#40; &#45;)', () => {
+    expect(recipe.name).toBe('Elderflower Ale')
+    expect(recipe.type).toBe('All Grain')
+    expect(recipe.brewer).toBe('Bicu Vlad')
+    expect(recipe.fermentables.map((f) => f.name)).toEqual([
+      'Pale Malt',
+      'Caramunich III',
+      'Carafa I',
+    ])
+    expect(recipe.miscs[0]!.name).toBe('Elderflower (umbels)')
+    expect(recipe.yeasts[0]!.name).toBe('London English-Style ESB')
+    expect(recipe.yeasts[0]!.laboratory).toBe('Lallemand (LalBrew)')
+  })
+
+  it('citește valorile cu unitate lipită ("9.1 SRM", "4.33 %")', () => {
+    expect(recipe.color).toBe(9.1)
+    expect(recipe.og).toBe(1.045)
+    expect(recipe.fg).toBe(1.012)
+    expect(recipe.abv).toBe(4.33)
+    expect(recipe.ibu).toBe(53.8)
+  })
+})
+
 describe('variante de structură', () => {
   const bare = `<?xml version="1.0"?>
     <RECIPE><NAME>Fără wrapper</NAME><BATCH_SIZE>20</BATCH_SIZE></RECIPE>`
@@ -165,6 +198,11 @@ describe('variante de structură', () => {
       </RECIPE>`)
     expect(recipe.fermentables).toHaveLength(1)
     expect(recipe.fermentables[0]!.name).toBe('Pilsner')
+  })
+
+  it('convertește culoarea declarată în EBC în SRM', () => {
+    const recipe = parseOne('<RECIPE><NAME>Ebc</NAME><EST_COLOR>19.7 EBC</EST_COLOR></RECIPE>')
+    expect(recipe.color).toBeCloseTo(10, 6)
   })
 
   it('calculează ABV din OG/FG când lipsește', () => {
