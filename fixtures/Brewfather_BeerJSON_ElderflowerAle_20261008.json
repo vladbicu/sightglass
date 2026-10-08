@@ -1,0 +1,318 @@
+{
+  "beerjson": {
+    "version": 2.06,
+    "recipes": [
+      {
+        "name": "Elderflower Ale",
+        "type": "all grain",
+        "author": "Bicu Vlad",
+        "batch_size": {
+          "unit": "l",
+          "value": 23
+        },
+        "efficiency": {
+          "brewhouse": {
+            "unit": "%",
+            "value": 72
+          }
+        },
+        "ingredients": {
+          "fermentable_additions": [
+            {
+              "name": "Pale Malt",
+              "type": "grain",
+              "amount": {
+                "unit": "kg",
+                "value": 4.3
+              },
+              "yield": {
+                "fine_grind": {
+                  "unit": "%",
+                  "value": 82.23
+                },
+                "potential": {
+                  "unit": "sg",
+                  "value": 1.038
+                }
+              },
+              "color": {
+                "unit": "SRM",
+                "value": 3.3
+              },
+              "grain_group": "base",
+              "origin": "Germany",
+              "producer": "Weyermann"
+            },
+            {
+              "name": "Caramunich III",
+              "type": "grain",
+              "amount": {
+                "unit": "kg",
+                "value": 0.185
+              },
+              "yield": {
+                "fine_grind": {
+                  "unit": "%",
+                  "value": 80.07
+                },
+                "potential": {
+                  "unit": "sg",
+                  "value": 1.037
+                }
+              },
+              "color": {
+                "unit": "SRM",
+                "value": 71
+              },
+              "grain_group": "caramel",
+              "origin": "Germany",
+              "producer": "Weyermann"
+            },
+            {
+              "name": "Carafa I",
+              "type": "grain",
+              "amount": {
+                "unit": "kg",
+                "value": 0.04
+              },
+              "yield": {
+                "fine_grind": {
+                  "unit": "%",
+                  "value": 77.9
+                },
+                "potential": {
+                  "unit": "sg",
+                  "value": 1.036
+                }
+              },
+              "color": {
+                "unit": "SRM",
+                "value": 320
+              },
+              "grain_group": "roasted",
+              "origin": "Germany",
+              "producer": "Weyermann"
+            }
+          ],
+          "hop_additions": [
+            {
+              "name": "Challenger",
+              "alpha_acid": {
+                "unit": "%",
+                "value": 7.5
+              },
+              "amount": {
+                "unit": "g",
+                "value": 56
+              },
+              "timing": {
+                "use": "add_to_boil",
+                "duration": {
+                  "unit": "min",
+                  "value": 60
+                }
+              },
+              "form": "pellet",
+              "origin": "United Kingdom",
+              "year": "2022"
+            },
+            {
+              "name": "Fuggle",
+              "alpha_acid": {
+                "unit": "%",
+                "value": 4.75
+              },
+              "amount": {
+                "unit": "g",
+                "value": 28
+              },
+              "timing": {
+                "use": "add_to_boil",
+                "duration": {
+                  "unit": "min",
+                  "value": 10
+                }
+              },
+              "form": "pellet",
+              "origin": "US"
+            },
+            {
+              "name": "Challenger",
+              "alpha_acid": {
+                "unit": "%",
+                "value": 7.5
+              },
+              "amount": {
+                "unit": "g",
+                "value": 17
+              },
+              "timing": {
+                "use": "add_to_boil",
+                "duration": {
+                  "unit": "min",
+                  "value": 0
+                }
+              },
+              "form": "pellet",
+              "origin": "United Kingdom",
+              "year": "2022"
+            }
+          ],
+          "miscellaneous_additions": [
+            {
+              "name": "Elderflower (umbels)",
+              "type": "flavor",
+              "amount": {
+                "unit": "g",
+                "value": 25
+              },
+              "timing": {
+                "use": "add_to_boil",
+                "duration": {
+                  "unit": "min",
+                  "value": 15
+                }
+              }
+            }
+          ],
+          "culture_additions": [
+            {
+              "name": "London English-Style ESB",
+              "type": "ale",
+              "form": "dry",
+              "amount": {
+                "unit": "pkg",
+                "value": 1
+              },
+              "timing": {
+                "use": "add_to_fermentation"
+              },
+              "producer": "Lallemand (LalBrew)",
+              "attenuation": {
+                "unit": "%",
+                "value": 72
+              }
+            }
+          ],
+          "water_additions": [
+            {
+              "name": "Default - Default",
+              "amount": {
+                "unit": "l",
+                "value": 0
+              },
+              "calcium": {
+                "unit": "ppm",
+                "value": 18
+              },
+              "bicarbonate": {
+                "unit": "ppm",
+                "value": 43
+              },
+              "sulfate": {
+                "unit": "ppm",
+                "value": 8
+              },
+              "chloride": {
+                "unit": "ppm",
+                "value": 10
+              },
+              "sodium": {
+                "unit": "ppm",
+                "value": 6
+              },
+              "magnesium": {
+                "unit": "ppm",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "boil": {
+          "boil_time": {
+            "unit": "min",
+            "value": 60
+          },
+          "pre_boil_size": {
+            "unit": "l",
+            "value": 28
+          }
+        },
+        "mash": {
+          "name": "High fermentability",
+          "grain_temperature": {
+            "unit": "C",
+            "value": 20
+          },
+          "mash_steps": [
+            {
+              "name": "Temperature",
+              "type": "temperature",
+              "step_temperature": {
+                "unit": "C",
+                "value": 65
+              },
+              "step_time": {
+                "unit": "min",
+                "value": 60
+              }
+            }
+          ]
+        },
+        "fermentation": {
+          "name": "Ale",
+          "fermentation_steps": [
+            {
+              "name": "Primary",
+              "step_time": {
+                "unit": "day",
+                "value": 7
+              },
+              "start_temperature": {
+                "unit": "C",
+                "value": 21
+              },
+              "description": "Primary"
+            },
+            {
+              "name": "Conditioning",
+              "step_time": {
+                "unit": "day",
+                "value": 14
+              },
+              "start_temperature": {
+                "unit": "C",
+                "value": 12
+              },
+              "description": "Conditioning"
+            }
+          ]
+        },
+        "original_gravity": {
+          "unit": "sg",
+          "value": 1.0448
+        },
+        "final_gravity": {
+          "unit": "sg",
+          "value": 1.012
+        },
+        "alcohol_by_volume": {
+          "unit": "%",
+          "value": 4.33
+        },
+        "apparent_attenuation": {
+          "unit": "%",
+          "value": 0.726
+        },
+        "ibu_estimate": {
+          "method": "Tinseth"
+        },
+        "color_estimate": {
+          "unit": "SRM",
+          "value": 9.1
+        },
+        "carbonation": 2.4
+      }
+    ]
+  }
+}

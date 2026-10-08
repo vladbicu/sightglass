@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
 import type { Theme } from '../lib/useTheme'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
@@ -52,20 +53,20 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
           <span className="display-title text-[clamp(1.5rem,4vh,2.75rem)] leading-tight">
             Cazanul e gol
           </span>
-          <span className="text-cream-dim text-[1.15rem]">Trage un fișier BeerXML aici</span>
+          <span className="text-cream-dim text-[1.15rem]">Trage un fișier de rețetă aici</span>
         </span>
 
         <span className="bg-line-strong h-px w-[180px]" />
 
         <span className="num text-cream-faint text-[0.85rem] tracking-[0.1em] uppercase">
-          .xml · Grainfather · Brewfather · BeerSmith
+          .xml · .json · BeerXML · BeerJSON · Brewfather
         </span>
       </button>
 
       <input
         ref={inputRef}
         type="file"
-        accept=".xml,text/xml,application/xml"
+        accept={RECIPE_FILE_ACCEPT}
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0]

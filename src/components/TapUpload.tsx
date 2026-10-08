@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
+import { RECIPE_FILE_ACCEPT } from '../lib/parseRecipe'
 import type { Theme } from '../lib/useTheme'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 
-const ACCEPT = '.xml,text/xml,application/xml'
 
 interface TapUploadProps {
   onFiles: (files: File[]) => void
@@ -25,7 +25,7 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
       ref={inputRef}
       type="file"
       multiple
-      accept={ACCEPT}
+      accept={RECIPE_FILE_ACCEPT}
       className="hidden"
       onChange={(e) => {
         const files = Array.from(e.target.files ?? [])
@@ -88,14 +88,14 @@ export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: 
             Niciun robinet încă
           </span>
           <span className="text-cream-dim text-[1.15rem]">
-            Trage aici fișiere BeerXML — câte vrei
+            Trage aici fișiere de rețetă — câte vrei
           </span>
         </span>
 
         <span className="bg-line-strong h-px w-[180px]" />
 
         <span className="num text-cream-faint text-[0.85rem] tracking-[0.1em] uppercase">
-          .xml · Grainfather · Brewfather · BeerSmith
+          .xml · .json · BeerXML · BeerJSON · Brewfather
         </span>
       </button>
 

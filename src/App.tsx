@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
 import { UploadZone } from './components/UploadZone'
-import { parseBeerXML, readRecipeFile } from './lib/parseBeerXML'
+import { readRecipeFile } from './lib/parseBeerXML'
+import { parseRecipeFile } from './lib/parseRecipe'
 import type { Recipe } from './lib/types'
 import { useTheme } from './lib/useTheme'
 import { useViewMode } from './lib/useViewMode'
@@ -20,7 +21,7 @@ export default function App() {
 
   const handleFile = async (file: File) => {
     try {
-      const { recipes: parsed, errors: parseErrors } = parseBeerXML(await readRecipeFile(file))
+      const { recipes: parsed, errors: parseErrors } = parseRecipeFile(await readRecipeFile(file))
 
       if (parsed.length === 0) {
         setRecipes(null)

@@ -1,6 +1,7 @@
 # Cazan
 
-You load a BeerXML export (Grainfather, Brewfather, BeerSmith) and see it as a
+You load a recipe export — BeerXML (Grainfather, Brewfather, BeerSmith),
+BeerJSON, or Brewfather's own JSON — and see it as a
 recipe ticket set in large type, made for a second monitor or a TV in the
 brewery, read from 2-3 metres away.
 
@@ -44,13 +45,17 @@ npm run preview    # serve the build locally
 ## Structure
 
 ```
-src/lib/parseBeerXML.ts   parsing + normalisation + decoding by encoding
+src/lib/parseRecipe.ts    entry point: detects the format by content
+src/lib/parseBeerXML.ts   BeerXML parsing + normalisation + decoding by encoding
+src/lib/parseBeerJSON.ts  BeerJSON ({unit, value} quantities → metric)
+src/lib/parseBrewfatherJSON.ts  Brewfather's own recipe/batch JSON
+src/lib/ibu.ts            Tinseth fallback when an export names no IBU figure
 src/lib/types.ts          the data model
 src/lib/srm.ts            SRM → colour
 src/lib/format.ts         masses, durations, gravities
 src/lib/tapList.ts        tap-list model + storage (pure, tested)
 src/components/           UploadZone, RecipeTicket + sections, TapBoard, TapUpload
-fixtures/                 a real export used as a test fixture
+fixtures/                 real exports used as test fixtures
 ```
 
 ## What the parser tolerates
@@ -74,9 +79,19 @@ tests in `src/lib/parseBeerXML.test.ts`:
 - **Encoding declared in the prolog** — the file is read as an `ArrayBuffer` and
   decoded according to `encoding="..."` (e.g. `ISO-8859-1`), not assumed to be
   UTF-8.
+- **Numeric character references and units in values** — Brewfather writes
+  `Elderflower&#32;Ale` and `<EST_COLOR>9.1 SRM</EST_COLOR>`; both are decoded,
+  and a colour declared in EBC is converted to SRM.
 - **Variable root** — `<RECIPES><RECIPE>` or `<RECIPE>` directly; several
   recipes in the same file are accepted, and one corrupt recipe does not
   invalidate the others.
+
+The JSON formats are covered in `src/lib/parseRecipe.test.ts`, which checks that
+Brewfather's three exports of the same recipe produce the same `Recipe`. Two
+caveats: BeerJSON carries no IBU figure (only the method), so it is estimated
+with Tinseth over the batch volume and reads a few IBU below Brewfather's own;
+and Brewfather JSON stores dry-hop / fermenter addition times in days, which is
+assumed rather than seen in a fixture.
 
 ## Themes
 

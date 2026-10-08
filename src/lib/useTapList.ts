@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { parseBeerXML, readRecipeFile } from './parseBeerXML'
+import { readRecipeFile } from './parseBeerXML'
+import { parseRecipeFile } from './parseRecipe'
 import {
   clampTapCount,
   moveTap,
@@ -85,7 +86,7 @@ export function useTapList(): UseTapList {
 
     for (const file of files) {
       try {
-        const { recipes, errors: parseErrors } = parseBeerXML(await readRecipeFile(file))
+        const { recipes, errors: parseErrors } = parseRecipeFile(await readRecipeFile(file))
         failures.push(...parseErrors.map((e) => `${file.name}: ${e}`))
         added.push(...tapsFromRecipes(recipes, recipes.map(newId), Date.now()))
       } catch (err) {
